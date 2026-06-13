@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail</title>
+
+    <link rel="stylesheet" href="../../static/css/style.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+{% include "./front/Share/navbar.html" %}
+{% block content %}
+<div class="container">
+    <div style="background: white; border-radius: var(--radius); padding: 2rem;">
+        <div class="product-detail-grid">
+            <div>
+                <img src="{{ product.image }}"
+     alt="{{ product.name }}"
+     class="product-detail-image">
+            </div>
+            <div>
+                <div class="product-brand" style="font-size: 1rem;">{{ product.brand }}</div>
+                <h1 style="font-size: 2rem; margin: 0.5rem 0;">{{ product.name }}</h1>
+                <div class="rating" style="margin: 1rem 0;">
+                    <div class="stars">
+                        {% for i in range(5) %}
+                            {% if i < product.rating|int %}
+                                <i class="fas fa-star"></i>
+                            {% elif i < product.rating %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="reviews">{{ product.reviews }} global ratings</span>
+                </div>
+                <div class="price" style="margin: 1rem 0;">
+                    <span class="current-price" style="font-size: 2rem;">${{ product.price }}</span>
+                    {% if product.original_price > product.price %}
+                    <span class="original-price" style="font-size: 1.2rem;">${{ product.original_price }}</span>
+                    <span class="discount-percent">Save {{ product.discount }}%</span>
+                    {% endif %}
+                </div>
+                <p style="color: var(--success); margin: 0.5rem 0;">
+                    <i class="fas fa-truck"></i> Free shipping on orders over $500
+                </p>
+                <hr style="margin: 1.5rem 0;">
+
+                <div style="margin: 1.5rem 0;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Color:</label>
+                   <select id="color-select" class="product-select">
+                        {% for color in product.colors %}
+                        <option value="{{ color }}">{{ color }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin: 1.5rem 0;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Storage:</label>
+                    <select id="storage-select" class="product-select">
+    {% for storage in product.storage %}
+    <option value="{{ storage }}">{{ storage }}</option>
+    {% endfor %}
+</select>
+                </div>
+
+<div style="margin: 1.5rem 0;">
+    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
+        Quantity:
+    </label>
+
+    <input
+        type="number"
+        id="quantity"
+        value="1"
+        min="1"
+        class="product-quantity">
+</div>
+
+<button
+    class="btn-add product-btn"
+    onclick="addToCartWithOptions()">
+    <i class="fas fa-cart-plus"></i>
+    Add to Cart
+</button>
+            </div>
+        </div>
+    </div>
+
+    {% if related %}
+    <h2 class="section-title" style="margin-top: 3rem;">You May Also Like</h2>
+    <div class="product-grid">
+        {% for product in related %}
+        <div class="product-card">
+            <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+            </a>
+            <div class="product-info">
+                <div class="product-brand">{{ product.brand }}</div>
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none;">
+                    <div class="product-name">{{ product.name }}</div>
+                </a>
+                <div class="price">
+                    <span class="current-price">${{ product.price }}</span>
+                </div>
+                <button class="btn-add" onclick="addToCart({{ product.id }})">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+<script>
+    function addToCartWithOptions() {
+        const productId = {{ product.id }};
+        const quantity = document.getElementById('quantity').value;
+        const color = document.getElementById('color-select').value;
+        const storage = document.getElementById('storage-select').value;
+        addToCart(productId, parseInt(quantity), color, storage);
+    }
+</script>
+{% endblock %}
+{% include "./front/Share/footer.html" %}
+</body>
+</html>

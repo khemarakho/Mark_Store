@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{% block title %}MobiShop - Premium Mobile Phones{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../static/css/style.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<header class="header"> <div class="nav-container"> <!-- Logo -->
+    <a href="{{ url_for('index') }}" class="logo"> Mark_Store </a>
+    <!-- Mobile Menu Button --> <div class="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i> </div> <!-- Search -->
+    <form action="{{ url_for('shop') }}" method="GET" class="search-bar">
+        <input type="text" name="search" placeholder="Search phones..." value="{{ request.args.get('search', '') }}">
+        <button type="submit"> <i class="fas fa-search"></i> </button> </form> <!-- Navigation -->
+    <div class="nav-links"> <a href="{{ url_for('index') }}"> <i class="fas fa-home"></i> Home </a>
+        <a href="{{ url_for('shop') }}"> <i class="fas fa-mobile-alt"></i> Shop </a> <a href="{{ url_for('my_orders') }}">
+            <i class="fas fa-shopping-bag"></i> My Orders </a> <a href="{{ url_for('cart') }}" class="cart-icon">
+            <i class="fas fa-shopping-cart"></i> Cart <span class="cart-count"> {{ cart_count() }} </span> </a> {% if is_logged_in() %}
+            <a href="{{ url_for('profile') }}"> <i class="fas fa-user-circle"></i> {{ current_user().name.split()[0] }} </a>
+            <a href="{{ url_for('logout') }}"> <i class="fas fa-sign-out-alt"></i> Logout </a> {% else %} <a href="{{ url_for('login') }}">
+                <i class="fas fa-user"></i> Login </a> {% endif %} </div> </div> </header>
+    <style>.menu-toggle{
+    display:none;
+}
+
+@media (max-width:780px){
+
+    .nav-container{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        position:relative;
+    }
+    .menu-toggle{
+        display:block;
+        font-size:28px;
+        cursor:pointer;
+        margin-left:auto;
+        padding:10px;
+    }
+
+    .search-bar{
+        display:none;
+    }
+
+    .nav-links{
+        display:none;
+        flex-direction:column;
+        width:100%;
+        background:#fff;
+        position:absolute;
+        top:60px;
+        left:0;
+        padding:15px;
+        box-shadow:0 4px 10px rgba(0,0,0,.1);
+        z-index:999;
+    }
+
+    .nav-links.active{
+        display:flex;
+    }
+}</style>
+<script>
+
+function addToCart(productId, quantity = 1, color = '', storage = '') {
+
+    const formData = new FormData();
+
+    formData.append('product_id', productId);
+    formData.append('quantity', quantity);
+    formData.append('color', color);
+    formData.append('storage', storage);
+
+    fetch('/add-to-cart', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.success) {
+
+            const cartCount =
+                document.querySelector('.cart-count');
+
+            if (cartCount) {
+                cartCount.innerText = data.cart_count;
+            }
+
+            showToast(data.message);
+
+        } else {
+
+            showToast(data.message, 'error');
+
+        }
+
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        showToast('Error adding to cart', 'error');
+
+    });
+}
+
+function showToast(message, type = 'success') {
+
+    const toast = document.createElement('div');
+
+    toast.className = 'toast';
+
+    toast.innerText = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+
+        toast.remove();
+
+    }, 3000);
+}
+
+function toggleMenu() {
+
+    document
+        .querySelector('.nav-links')
+        .classList.toggle('active');
+}
+
+</script>
+
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

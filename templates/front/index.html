@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Product</title>
+   <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+{% include "./front/Share/navbar.html" %}
+{% block content %}
+<div class="container">
+    <div class="hero">
+        <h1>Welcome to Mark Shop Mobile Technology</h1>
+        <p>Get the latest smartphones at unbeatable prices. Free shipping on orders over $500!</p>
+        <a href="{{ url_for('shop') }}" class="btn-primary">Shop Now <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    {% if featured_products %}
+    <h2 class="section-title">Featured Phones</h2>
+    <div class="product-grid">
+        {% for product in featured_products %}
+        <div class="product-card">
+            {% if product.discount > 0 %}
+            <div class="badge discount">-{{ product.discount }}%</div>
+            {% endif %}
+            <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+            </a>
+            <div class="product-info">
+                <div class="product-brand">{{ product.brand }}</div>
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none;">
+                    <div class="product-name">{{ product.name }}</div>
+                </a>
+                <div class="rating">
+                    <div class="stars">
+                        {% for i in range(5) %}
+                            {% if i < product.rating|int %}
+                                <i class="fas fa-star"></i>
+                            {% elif i < product.rating %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="reviews">({{ product.reviews }} reviews)</span>
+                </div>
+                <div class="price">
+                    <span class="current-price">${{ product.price }}</span>
+                    {% if product.original_price > product.price %}
+                    <span class="original-price">${{ product.original_price }}</span>
+                    <span class="discount-percent">Save {{ product.discount }}%</span>
+                    {% endif %}
+                </div>
+                <button class="btn-add" onclick="addToCart({{ product.id }}, 1, '{{ product.colors[0] if product.colors else '' }}', '{{ product.storage[0] if product.storage else '' }}')">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if new_products %}
+    <h2 class="section-title">New Arrivals</h2>
+    <div class="product-grid">
+        {% for product in new_products[:4] %}
+        <div class="product-card">
+            <div class="badge new">New</div>
+            <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+            </a>
+            <div class="product-info">
+                <div class="product-brand">{{ product.brand }}</div>
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none;">
+                    <div class="product-name">{{ product.name }}</div>
+                </a>
+                <div class="rating">
+                    <div class="stars">
+                        {% for i in range(5) %}
+                            {% if i < product.rating|int %}
+                                <i class="fas fa-star"></i>
+                            {% elif i < product.rating %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="reviews">({{ product.reviews }} reviews)</span>
+                </div>
+                <div class="price">
+                    <span class="current-price">${{ product.price }}</span>
+                    {% if product.original_price > product.price %}
+                    <span class="original-price">${{ product.original_price }}</span>
+                    {% endif %}
+                </div>
+                <button class="btn-add" onclick="addToCart({{ product.id }})">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% include "./front/Share/footer.html" %}
+</body>
+</html>

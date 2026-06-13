@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+
+{% include "./front/Share/navbar.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="section-title">My Profile</h1>
+
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div style="background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);">
+            <!-- Profile Header -->
+            <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 2rem; text-align: center; color: white;">
+                <div style="width: 100px; height: 100px; background: white; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user" style="font-size: 3rem; color: var(--primary);"></i>
+                </div>
+                <h2>{{ user.name }}</h2>
+                <p>{{ user.email }}</p>
+                <p><small>Member since {{ user.created_at }}</small></p>
+            </div>
+
+            <!-- Profile Info -->
+            <div style="padding: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">Account Information</h3>
+
+                <div style="display: grid; gap: 1rem;">
+                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray);">
+                        <div style="width: 120px; font-weight: 600; color: var(--gray);">Full Name</div>
+                        <div>{{ user.name }}</div>
+                    </div>
+
+                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray);">
+                        <div style="width: 120px; font-weight: 600; color: var(--gray);">Email Address</div>
+                        <div>{{ user.email }}</div>
+                    </div>
+
+                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray);">
+                        <div style="width: 120px; font-weight: 600; color: var(--gray);">Member Since</div>
+                        <div>{{ user.created_at }}</div>
+                    </div>
+
+                    <div style="display: flex; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray);">
+                        <div style="width: 120px; font-weight: 600; color: var(--gray);">Account Status</div>
+                        <div><span style="background: var(--success); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem;">Active</span></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="#" style="padding: 0.75rem 1.5rem; background: var(--primary); color: white; text-decoration: none; border-radius: 0.5rem; text-align: center;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+                    <a href="#" style="padding: 0.75rem 1.5rem; background: var(--gray); color: white; text-decoration: none; border-radius: 0.5rem; text-align: center;">
+                        <i class="fas fa-key"></i> Change Password
+                    </a>
+                    <a href="{{ url_for('logout') }}" style="padding: 0.75rem 1.5rem; background: var(--danger); color: white; text-decoration: none; border-radius: 0.5rem; text-align: center;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order History (placeholder) -->
+        <div style="background: white; border-radius: var(--radius); padding: 2rem; margin-top: 2rem; box-shadow: var(--shadow);">
+            <h3 style="margin-bottom: 1rem;">Recent Orders</h3>
+            <p style="color: var(--gray); text-align: center; padding: 2rem;">
+                <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                No orders yet. <a href="{{ url_for('shop') }}" style="color: var(--primary);">Start shopping!</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% include "./front/Share/footer.html" %}
+</body>
+</html>

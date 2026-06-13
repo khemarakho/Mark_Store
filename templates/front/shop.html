@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+{% include "./front/Share/navbar.html" %}
+{% block content %}
+<div class="container">
+    <div class="shop-layout">
+        <aside class="filters">
+            <h3><i class="fas fa-filter"></i> Filters</h3>
+            <div class="filter-group">
+                <h4>Brand</h4>
+                <a href="{{ url_for('shop') }}" class="{% if not selected_brand %}active{% endif %}">All</a>
+                {% for brand in brands %}
+                <a href="{{ url_for('shop', brand=brand, search=search_query, sort=selected_sort) }}" class="{% if selected_brand == brand %}active{% endif %}">{{ brand }}</a>
+                {% endfor %}
+            </div>
+            <div class="filter-group">
+                <h4>Sort By</h4>
+                <select class="sort-select" id="sort-select">
+                    <option value="default" {% if selected_sort == 'default' %}selected{% endif %}>Default</option>
+                    <option value="price_low" {% if selected_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_high" {% if selected_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>Rating</option>
+                    <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest First</option>
+                </select>
+            </div>
+        </aside>
+
+        <div class="products-area">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">All Phones</h2>
+                <span>{{ products|length }} products found</span>
+            </div>
+
+            {% if products %}
+            <div class="product-grid">
+                {% for product in products %}
+                <div class="product-card">
+                 <a href="{{ url_for('product_detail', product_id=product.id) }}"></a>
+                    {% if product.discount > 0 %}
+                    <div class="badge discount">-{{ product.discount }}%</div>
+                    {% endif %}
+                    {% if product.is_new %}
+                    <div class="badge new" style="left: auto; right: 1rem;">New</div>
+                    {% endif %}
+                    <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                        <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+                    </a>
+                    <div class="product-info">
+                        <div class="product-brand">{{ product.brand }}</div>
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none;">
+                            <div class="product-name">{{ product.name }}</div>
+                        </a>
+                        <div class="rating">
+                            <div class="stars">
+                                {% for i in range(5) %}
+                                    {% if i < product.rating|int %}
+                                        <i class="fas fa-star"></i>
+                                    {% elif i < product.rating %}
+                                        <i class="fas fa-star-half-alt"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="reviews">({{ product.reviews }})</span>
+                        </div>
+                        <div class="price">
+                            <span class="current-price">${{ product.price }}</span>
+                            {% if product.original_price > product.price %}
+                            <span class="original-price">${{ product.original_price }}</span>
+                            {% endif %}
+                        </div>
+                        <button class="btn-add" onclick="addToCart({{ product.id }})">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: 4rem; background: white; border-radius: var(--radius);">
+                <i class="fas fa-search" style="font-size: 3rem; color: var(--gray); margin-bottom: 1rem;"></i>
+                <h3>No products found</h3>
+                <p>Try adjusting your filters or search term.</p>
+                <a href="{{ url_for('shop') }}" class="btn-primary">Clear Filters</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('sort-select').addEventListener('change', function() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort', this.value);
+        window.location.href = url.toString();
+    });
+</script>
+{% endblock %}
+{% include "./front/Share/footer.html" %}
+</body>
+</html>

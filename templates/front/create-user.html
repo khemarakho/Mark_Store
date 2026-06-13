@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+<body>
+{% include "./front/Share/navbar.html" %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 500px; margin: 2rem auto;">
+        <div style="background: white; border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow-lg);">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <i class="fas fa-user-plus" style="font-size: 3rem; color: var(--primary);"></i>
+                <h2 style="margin-top: 1rem;">Create Account</h2>
+                <p style="color: var(--gray);">Join NyNy Mobile Store for exclusive deals</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('create_user') }}">
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-user" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray);"></i>
+                        <input type="text" name="name" placeholder="Enter Name" required
+                               style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--light-gray); border-radius: 0.5rem; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email Address</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-envelope" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray);"></i>
+                        <input type="email" name="email" placeholder="you@example.com" required
+                               style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--light-gray); border-radius: 0.5rem; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Password</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-lock" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray);"></i>
+                        <input type="password" name="password" placeholder="Create a password" required
+                               style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--light-gray); border-radius: 0.5rem; font-size: 1rem;">
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--gray); margin-top: 0.25rem;">Must be at least 6 characters</p>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Confirm Password</label>
+                    <div style="position: relative;">
+                        <i class="fas fa-check-circle" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray);"></i>
+                        <input type="password" name="confirm_password" placeholder="Confirm your password" required
+                               style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--light-gray); border-radius: 0.5rem; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" required>
+                        <span style="font-size: 0.9rem;">I agree to the <a href="#" style="color: var(--primary);">Terms of Service</a> and <a href="#" style="color: var(--primary);">Privacy Policy</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" style="width: 100%; padding: 0.75rem; background: var(--primary); color: white; border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.3s;">
+                    Create Account
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--light-gray);">
+                <p style="color: var(--gray);">Already have an account?
+                    <a href="{{ url_for('login') }}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign In</a>
+                </p>
+            </div>
+
+            <!-- Benefits -->
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+{#                <p style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Why create an account?</p>#}
+{#                <ul style="font-size: 0.8rem; color: var(--gray); list-style: none; padding: 0;">#}
+{#                    <li style="margin-bottom: 0.25rem;"><i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i> Faster checkout process</li>#}
+{#                    <li style="margin-bottom: 0.25rem;"><i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i> Track your orders</li>#}
+{#                    <li style="margin-bottom: 0.25rem;"><i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i> Save favorite products</li>#}
+{#                    <li><i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i> Exclusive member discounts</li>#}
+{#                </ul>#}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{#{% include "./front/Share/footer.html" %}#}
+</body>
+</html>

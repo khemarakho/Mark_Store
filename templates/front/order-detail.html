@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - MobiShop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .order-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .product-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-shipped {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+{% include "./front/Share/navbar.html" %}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Sidebar -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-user-circle fa-4x text-primary"></i>
+                        <h5 class="mt-2">{{ current_user().name }}</h5>
+                        <small class="text-muted">{{ current_user().email }}</small>
+                    </div>
+                    <hr>
+                    <div class="list-group">
+                        <a href="{{ url_for('profile') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-user me-2"></i> Profile
+                        </a>
+                        <a href="{{ url_for('my_orders') }}" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-shopping-bag me-2"></i> My Orders
+                        </a>
+                        <a href="{{ url_for('cart') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-shopping-cart me-2"></i> Cart
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-shopping-bag me-2"></i>My Orders</h2>
+                <a href="{{ url_for('shop') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Continue Shopping
+                </a>
+            </div>
+
+            {% if orders and orders|length > 0 %}
+                {% for order in orders %}
+                <div class="card order-card">
+                    <div class="card-header bg-white">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <small class="text-muted">Order ID</small>
+                                <br>
+                                <strong>#{{ order.get('order_id', 'N/A') }}</strong>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Order Date</small>
+                                <br>
+                                <strong>{{ order.get('order_date_display', order.get('order_date', 'N/A')) }}</strong>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Total Amount</small>
+                                <br>
+                                <strong class="text-success">${{ "%.2f"|format(order.get('total', 0)) }}</strong>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <span class="status-badge status-{{ order.get('status', 'pending') }}">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    {{ order.get('status', 'pending')|capitalize }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Product List -->
+                        <div class="row">
+                            <div class="col-md-9">
+                                <small class="text-muted">Items purchased:</small>
+                                <div class="mt-2">
+                                    {% set items_list = order.get('items', []) %}
+                                    {% if items_list and items_list|length > 0 %}
+                                        {% for item in items_list[:3] %}
+                                        <div class="d-flex align-items-center mb-3">
+                                            <img src="{{ item.get('image', 'https://via.placeholder.com/60') }}" alt="{{ item.get('name', 'Product') }}" class="product-thumb me-3">
+                                            <div class="flex-grow-1">
+                                                <strong>{{ item.get('name', 'Unknown Product') }}</strong>
+                                                {% if item.get('color') %}
+                                                <br><small class="text-muted">Color: {{ item.get('color') }}</small>
+                                                {% endif %}
+                                                {% if item.get('storage') %}
+                                                <small class="text-muted"> | Storage: {{ item.get('storage') }}</small>
+                                                {% endif %}
+                                                <br><small>Quantity: {{ item.get('quantity', 1) }} x ${{ "%.2f"|format(item.get('price', 0)) }}</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <strong>${{ "%.2f"|format((item.get('price', 0) * item.get('quantity', 1))) }}</strong>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                        {% if items_list|length > 3 %}
+                                        <p class="text-muted small mt-2">
+                                            <i class="fas fa-plus-circle"></i> and {{ items_list|length - 3 }} more item(s)
+                                        </p>
+                                        {% endif %}
+                                    {% else %}
+                                        <p class="text-muted">No items in this order</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <a href="{{ url_for('order_detail', order_id=order.get('order_id', '')) }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small class="text-muted">
+                                    <i class="fas fa-truck me-1"></i>
+                                    Shipping to: {{ order.get('shipping_address', 'N/A') }}, {{ order.get('city', 'N/A') }}
+                                </small>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <small class="text-muted">
+                                    <i class="fas fa-credit-card me-1"></i>
+                                    Payment: {{ order.get('payment_method', 'N/A')|replace('_', ' ')|title }}
+                                    {% if order.get('payment_status') == 'paid' %}
+                                    <span class="badge bg-success ms-1">Paid</span>
+                                    {% else %}
+                                    <span class="badge bg-warning ms-1">Pending</span>
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-shopping-bag fa-4x text-muted mb-3"></i>
+                        <h4>No orders yet</h4>
+                        <p class="text-muted">You haven't placed any orders yet.</p>
+                        <a href="{{ url_for('shop') }}" class="btn btn-primary mt-3">
+                            <i class="fas fa-shopping-cart me-2"></i>Start Shopping
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% include "./front/Share/footer.html" %}
+</body>
+</html>
